@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Shoehorn Calculator</title>
+  <script type="text/javascript">
+    // Single Page Apps for GitHub Pages
+    // MIT License
+    // https://github.com/rafgraph/spa-github-pages
+    // This script takes the current url and converts the path and query
+    // string into just a query string, and then redirects the browser
+    // to the new url with only a query string and hash fragment
+
+    // Parse the URL
+    var pathSegmentsToKeep = 1;
+    var l = window.location;
+    var segments = l.pathname.split('/');
+    var route = segments.slice(pathSegmentsToKeep, segments.length).join('/');
+    const repositoryName = 'Shoehorn-Calculator';
+
+    // Redirect to the root index.html with proper route
+    l.replace(
+      `${l.protocol}//${l.hostname}${
+        l.port ? `:${l.port}` : ''
+      }/${repositoryName}/?/${route}${l.search}${l.hash}`
+    );
+  </script>
+</head>
+<body>
+  <p>Redirecting to home page...</p>
+</body>
+</html>

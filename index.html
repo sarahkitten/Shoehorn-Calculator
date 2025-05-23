@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abbeyhorn Shoehorn Calculator</title>
+    <script type="text/javascript">
+      // Single-page apps (SPA) for GitHub Pages
+      // Handles routing when the page is loaded directly via GitHub Pages
+      (function() {
+        // Detect if this is a redirect from a 404 page
+        const redirectMatch = window.location.search.match(/\?\/(.*)/);
+        if (redirectMatch) {
+          // Remove the leading ? and use the captured route
+          const path = redirectMatch[1];
+          // Replace the query string with nothing and set the path as needed
+          history.replaceState(null, null, '/' + path);
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
