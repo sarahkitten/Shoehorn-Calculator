@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
 // Define shoe time constants based on the project plan
-const SHOE_TIMES: Record<string, number> = {
+export const SHOE_TIMES: Record<string, number> = {
   'Big Rubber Clown Shoes': 200,
   'Boots': 80,
   'Hi Top Sneakers': 60,
@@ -72,8 +72,15 @@ export const useCalculatorStore = defineStore('calculator', () => {
 
   // Calculate results for basic mode
   function calculateBasicResults() {
+    console.log('Starting calculation with inputs:', {
+      age: age.value,
+      shoeType: shoeType.value,
+      weeklyOutings: weeklyOutings.value
+    });
+
     if (age.value === null || weeklyOutings.value === null) {
-      return
+      console.log('Calculation aborted: Missing required inputs');
+      return;
     }
 
     // Clear previous results
@@ -81,9 +88,11 @@ export const useCalculatorStore = defineStore('calculator', () => {
     
     // Check for "weirdness" in inputs
     detectWeirdness()
+    console.log('Weirdness detected:', weirdnessMessages.value);
     
     // Set shoe-specific message
     setShoeMessage()
+    console.log('Shoe message set:', shoeMessage.value);
     
     // Basic calculation:
     // Age × weeks per year × weekly outings × 2 (on/off) × shoe time
@@ -91,15 +100,38 @@ export const useCalculatorStore = defineStore('calculator', () => {
     const weeksPerYear = 52
     const shoePutOnTimeSeconds = SHOE_TIMES[shoeType.value]
     
+    console.log('Intermediate calculation values:', {
+      yearsWearingShoes,
+      weeksPerYear,
+      weeklyOutings: weeklyOutings.value,
+      shoePutOnTimeSeconds
+    });
+
+    // Always calculate some time spent for display purposes, even for very young ages
+    // If age is below 6, we'll still show some results rather than nothing
+    const effectiveYears = Math.max(1, yearsWearingShoes);
+    
     // Calculate time spent putting on shoes in seconds
-    timeSpent.value = yearsWearingShoes * weeksPerYear * weeklyOutings.value * 2 * shoePutOnTimeSeconds
+    timeSpent.value = effectiveYears * weeksPerYear * weeklyOutings.value * 2 * shoePutOnTimeSeconds
     
     // Calculate time saved with shoehorn
     const shoehornTimeSeconds = SHOEHORN_TIMES[shoeType.value]
-    timeSaved.value = timeSpent.value - (yearsWearingShoes * weeksPerYear * weeklyOutings.value * 2 * shoehornTimeSeconds)
+    timeSaved.value = timeSpent.value - (effectiveYears * weeksPerYear * weeklyOutings.value * 2 * shoehornTimeSeconds)
+
+    console.log('Calculation results:', {
+      shoePutOnTimeSeconds,
+      yearsWearingShoes,
+      effectiveYears,
+      shoehornTimeSeconds,
+      timeSpent: timeSpent.value,
+      timeSaved: timeSaved.value,
+      formattedTimeSpent: formatTime(timeSpent.value),
+      formattedTimeSaved: formatTime(timeSaved.value)
+    });
 
     // Set recommendation message
     setRecommendation()
+    console.log('Recommendation set:', recommendation.value);
   }
 
   // Detect weird inputs and set appropriate messages

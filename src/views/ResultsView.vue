@@ -1,54 +1,56 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import { useCalculatorStore } from '../stores/calculator';
+import { useCalculatorStore, SHOE_TIMES } from '../stores/calculator';
 import { onMounted, computed } from 'vue';
 
 const router = useRouter();
 const calculatorStore = useCalculatorStore();
 
-// Compute the time per pair safely to avoid null values
-const timePerPair = computed(() => {
-  if (calculatorStore.shoeType === 'No Shoes') {
-    return '0 seconds';
-  }
-  
-  if (calculatorStore.age === null || calculatorStore.weeklyOutings === null) {
-    return calculatorStore.formatTime(SHOE_TIMES[calculatorStore.shoeType] || 0);
-  }
-  
-  return calculatorStore.formatTime(
-    calculatorStore.timeSpent / (calculatorStore.age * 52 * calculatorStore.weeklyOutings * 2)
-  );
+console.log('ResultsView loaded with data:', {
+  shoeType: calculatorStore.shoeType,
+  timeSpent: calculatorStore.timeSpent,
+  timeSaved: calculatorStore.timeSaved,
+  formattedTimeSpent: calculatorStore.formatTime(calculatorStore.timeSpent),
+  weirdnessMessages: calculatorStore.weirdnessMessages
 });
 
-// Shoe time constants for fallback
-const SHOE_TIMES: Record<string, number> = {
-  'Big Rubber Clown Shoes': 200,
-  'Boots': 80,
-  'Hi Top Sneakers': 60,
-  'Dress shoes': 50,
-  'Sneakers': 45,
-  'Low Top Sneakers': 40,
-  'High Heels': 15,
-  'Velcro Shoes': 15,
-  'Slip ons/Flats': 10,
-  'Flip flops/Sandals': 5,
-  'No Shoes': 0
-};
+// Compute the time per pair using the shoe time constants
+const timePerPair = computed(() => {
+  console.log('Computing timePerPair, shoeType:', calculatorStore.shoeType);
+  // Check if shoe type exists in SHOE_TIMES
+  if (!(calculatorStore.shoeType in SHOE_TIMES)) {
+    console.error('Invalid shoe type:', calculatorStore.shoeType);
+    return calculatorStore.formatTime(0);
+  }
+  // Simply use the shoe time constant directly
+  return calculatorStore.formatTime(SHOE_TIMES[calculatorStore.shoeType] || 0);
+});
 
 onMounted(() => {
-  // If there are no results, redirect back to the calculator
-  if (calculatorStore.timeSpent === 0 && calculatorStore.timeSaved === 0) {
+  console.log('ResultsView onMounted check:', {
+    timeSpent: calculatorStore.timeSpent, 
+    timeSaved: calculatorStore.timeSaved,
+    weirdnessMessages: calculatorStore.weirdnessMessages
+  });
+  
+  // If there are no results AND no weirdness messages, redirect back to the calculator
+  // This handles cases where the user somehow navigated to results without calculating
+  if (calculatorStore.timeSpent === 0 && calculatorStore.timeSaved === 0 && calculatorStore.weirdnessMessages.length === 0) {
+    console.log('No results or weirdness messages found, redirecting back to calculator');
     router.push('/');
+  } else {
+    console.log('Results or weirdness messages available, displaying page');
   }
 });
 
 const handleTryAgain = () => {
+  console.log('Try again button clicked, resetting calculator');
   calculatorStore.resetCalculator();
   router.push('/');
 };
 
 const handleAdvancedMode = () => {
+  console.log('Advanced mode button clicked, toggling mode');
   calculatorStore.toggleMode();
   router.push('/');
 };

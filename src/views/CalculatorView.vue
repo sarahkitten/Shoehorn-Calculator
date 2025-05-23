@@ -32,9 +32,24 @@ const validateForm = (): boolean => {
 };
 
 const handleSubmit = () => {
+  console.log('Submit button clicked');
+  console.log('Current values:', {
+    age: calculatorStore.age,
+    shoeType: calculatorStore.shoeType,
+    weeklyOutings: calculatorStore.weeklyOutings
+  });
+  
   if (validateForm()) {
+    console.log('Validation successful, calculating results');
     calculatorStore.calculateBasicResults();
+    console.log('Calculation completed, redirecting to results');
+    console.log('Results:', {
+      timeSpent: calculatorStore.timeSpent,
+      timeSaved: calculatorStore.timeSaved
+    });
     router.push('/results');
+  } else {
+    console.log('Validation failed', { ageError: ageError.value, outingsError: outingsError.value });
   }
 };
 
