@@ -1,10 +1,40 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { useCalculatorStore } from '../stores/calculator';
-import { onMounted } from 'vue';
+import { onMounted, computed } from 'vue';
 
 const router = useRouter();
 const calculatorStore = useCalculatorStore();
+
+// Compute the time per pair safely to avoid null values
+const timePerPair = computed(() => {
+  if (calculatorStore.shoeType === 'No Shoes') {
+    return '0 seconds';
+  }
+  
+  if (calculatorStore.age === null || calculatorStore.weeklyOutings === null) {
+    return calculatorStore.formatTime(SHOE_TIMES[calculatorStore.shoeType] || 0);
+  }
+  
+  return calculatorStore.formatTime(
+    calculatorStore.timeSpent / (calculatorStore.age * 52 * calculatorStore.weeklyOutings * 2)
+  );
+});
+
+// Shoe time constants for fallback
+const SHOE_TIMES: Record<string, number> = {
+  'Big Rubber Clown Shoes': 200,
+  'Boots': 80,
+  'Hi Top Sneakers': 60,
+  'Dress shoes': 50,
+  'Sneakers': 45,
+  'Low Top Sneakers': 40,
+  'High Heels': 15,
+  'Velcro Shoes': 15,
+  'Slip ons/Flats': 10,
+  'Flip flops/Sandals': 5,
+  'No Shoes': 0
+};
 
 onMounted(() => {
   // If there are no results, redirect back to the calculator
@@ -48,7 +78,7 @@ const handleAdvancedMode = () => {
       <!-- Show calculation results -->
       <div class="time-results">
         <p>
-          Assuming it takes you {{ calculatorStore.shoeType !== 'No Shoes' ? calculatorStore.formatTime(calculatorStore.timeSpent / (calculatorStore.age * 52 * calculatorStore.weeklyOutings * 2)) : '0 seconds' }} to put on your {{ calculatorStore.shoeType }}, 
+          Assuming it takes you {{ timePerPair }} to put on your {{ calculatorStore.shoeType }}, 
           you've spent <span class="highlight">{{ calculatorStore.formatTime(calculatorStore.timeSpent) }}</span> across your life, just putting on shoes.
         </p>
         
