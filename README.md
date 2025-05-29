@@ -1,64 +1,150 @@
-# shoehorn-calculator
+# Abbeyhorn Shoehorn Calculator
 
-This template should help get you started developing with Vue 3 in Vite.
+![Abbeyhorn Logo](/src/assets/abbeyhorn-logo.png)
 
-## Recommended IDE Setup
+## Project Overview
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+The Shoehorn Calculator is an interactive web application that calculates how much time you've spent putting on shoes throughout your life and how much time you could have saved with a shoehorn. This conceptual project for Abbeyhorn showcases how small daily activities can accumulate into significant time expenditures over a lifetime.
 
-## Type Support for `.vue` Imports in TS
+### Key Features
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+- **Basic & Advanced Calculation Modes**
+  - Basic Mode: Simple 3-question interface for quick calculations
+  - Advanced Mode: Detailed inputs for more precise time estimates
+  
+- **Personalized Experience**
+  - Shoe-specific messaging based on footwear preferences
+  - Playful responses to unusual or edge-case inputs
+  - Customized time-saving recommendations
+  
+- **Interactive UI**
+  - Intuitive sliders for time and distribution settings
+  - Form validation with helpful error messages
+  - Responsive design for all devices
+  
+- **Results & Sharing**
+  - Detailed breakdown of time spent and time saved
+  - Customized recommendations based on calculation results
+  - Social sharing capabilities
+  - Special promotional coupon offering
 
-## Customize configuration
+## Demo
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+You can try the live application at: [https://sarahkitten.github.io/Shoehorn-Calculator/](https://sarahkitten.github.io/Shoehorn-Calculator/)
 
-## Project Setup
+## Technologies Used
 
-```sh
-npm install
+- **Vue 3**: Progressive JavaScript framework
+- **TypeScript**: Type-safe JavaScript
+- **Pinia**: State management
+- **Vue Router**: Client-side routing
+- **Vite**: Build tool and development server
+- **Vitest/Playwright**: Testing frameworks
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (version 18 or higher)
+- npm or yarn package manager
+
+### Installation
+
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/your-username/shoehorn-calculator.git
+   cd shoehorn-calculator
+   ```
+
+2. Install dependencies:
+   ```sh
+   npm install
+   ```
+
+3. Start the development server:
+   ```sh
+   npm run dev
+   ```
+
+4. Open your browser and navigate to:
+   ```
+   http://localhost:5173
+   ```
+
+## Development
+
+### Project Structure
+
+```
+shoehorn-calculator/
+├── public/               # Static assets
+├── src/
+│   ├── assets/           # CSS and other assets
+│   ├── components/       # Vue components
+│   ├── router/           # Vue Router configuration
+│   ├── stores/           # Pinia stores
+│   ├── views/            # Page components
+│   ├── App.vue           # Root component
+│   └── main.ts           # Application entry point
+├── e2e/                  # End-to-end tests
+└── ...                   # Config files
 ```
 
-### Compile and Hot-Reload for Development
+### Available Scripts
 
-```sh
-npm run dev
-```
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build locally
+- `npm run test:unit` - Run unit tests
+- `npm run test:e2e` - Run end-to-end tests
+- `npm run lint` - Lint code
+- `npm run format` - Format code with Prettier
+- `npm run deploy` - Deploy to GitHub Pages
 
-### Type-Check, Compile and Minify for Production
+## Calculation Logic
 
-```sh
-npm run build
-```
+The calculator uses several factors to determine time spent putting on shoes:
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+### Basic Mode:
+- Age × weeks per year × weekly outings × 2 (on/off) × shoe-specific time
 
-```sh
-npm run test:unit
-```
+### Advanced Mode:
+- Factors in:
+  - Custom put-on time
+  - Shoe type distribution
+  - Age when learned to put on shoes
+  - Taking shoes off at home behavior
+  - Existing shoehorn ownership
 
-### Run End-to-End Tests with [Playwright](https://playwright.dev)
+### Shoe Time Constants:
+- Big Rubber Clown Shoes: 200 seconds
+- Boots: 80 seconds
+- Hi Top Sneakers: 60 seconds
+- Dress shoes: 50 seconds
+- Sneakers: 45 seconds
+- Low Top Sneakers: 40 seconds
+- High Heels/Velcro Shoes: 15 seconds
+- Slip ons/Flats: 10 seconds
+- Flip flops/Sandals: 5 seconds
+- No Shoes: 0 seconds
 
-```sh
-# Install browsers for the first run
-npx playwright install
+## Contributing
 
-# When testing on CI, must build the project first
-npm run build
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-# Runs the end-to-end tests
-npm run test:e2e
-# Runs the tests only on Chromium
-npm run test:e2e -- --project=chromium
-# Runs the tests of a specific file
-npm run test:e2e -- tests/example.spec.ts
-# Runs the tests in debug mode
-npm run test:e2e -- --debug
-```
+## License
 
-### Lint with [ESLint](https://eslint.org/)
+This project is a creative concept for Abbeyhorn and is not intended for commercial use without permission.
 
-```sh
-npm run lint
-```
+## Acknowledgments
+
+- Created as a conceptual campaign for [Abbeyhorn](https://www.abbeyhorn.co.uk/)
+- All time calculations are for entertainment purposes only and are not scientifically validated.
+
+## Contact
+
+If you have any questions or feedback, please reach out at [sarahnkitten@gmail.com](mailto:sarahnkitten@gmail.com).
+
+---
+
+© ${new Date().getFullYear()} Abbeyhorn. This is a conceptual project.

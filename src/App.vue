@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import ShoehornLogo from './components/ShoehornLogo.vue'
 </script>
 
 <template>
   <header>
     <div class="header-content">
       <div class="logo-container">
-        <ShoehornLogo :size="36" />
-        <div class="logo">Abbeyhorn</div>
+        <img src="./assets/abbeyhorn-logo.png" alt="Abbeyhorn Logo" class="abbeyhorn-logo" />
       </div>
       <div class="tagline">Save time. Use a shoehorn.</div>
     </div>
@@ -71,13 +69,11 @@ header {
 .logo-container {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
 }
 
-.logo {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: var(--color-primary);
+.abbeyhorn-logo {
+  width: 60px;
+  height: auto;
 }
 
 .tagline {
