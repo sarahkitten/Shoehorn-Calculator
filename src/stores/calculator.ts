@@ -355,20 +355,95 @@ export const useCalculatorStore = defineStore('calculator', () => {
 
   // Generate a random activity for the time saved message
   function generateRandomActivity(seconds: number): string {
-    const activities = [
-      "learn the basics of a new language",
-      "bake a perfect loaf of bread",
-      "watch a movie",
-      "read a good book",
-      "take a power nap",
-      "go for a run",
-      "call an old friend",
-      "learn a new recipe"
-    ]
+    // Define activities based on time ranges
+    const timeRanges = [
+      { maxSeconds: 1800, activities: [ // < 30 minutes
+        "grab a snack",
+        "take a power nap",
+        "do a festive jig"
+      ]},
+      { maxSeconds: 3600, activities: [ // < 1 hour
+        "do a quick workout",
+        "run an errand that's been stressing you out",
+        "play a board game"
+      ]},
+      { maxSeconds: 21600, activities: [ // < 6 hours
+        "go bowling",
+        "watch a movie",
+        "shoot a video"
+      ]},
+      { maxSeconds: 43200, activities: [ // < 12 hours
+        "draw a really cool picture",
+        "have a spa day",
+        "dig up a dinosaur bone"
+      ]},
+      { maxSeconds: 86400, activities: [ // < 24 hours
+        "learn a new skill",
+        "go to the beach",
+        "knock out your to-do list"
+      ]},
+      { maxSeconds: 259200, activities: [ // < 3 days
+        "read a good book (or a bad one)",
+        "develop a website about shoehorns",
+        "go on a fishing trip"
+      ]},
+      { maxSeconds: 604800, activities: [ // < 1 week
+        "go bigfoot-hunting",
+        "clean your house",
+        "start a garden"
+      ]},
+      { maxSeconds: 1209600, activities: [ // < 2 weeks
+        "go on a cruise",
+        "beat a video game",
+        "climb mount everest"
+      ]},
+      { maxSeconds: 2592000, activities: [ // < 1 month
+        "build a shed in your backyard",
+        "carry out a military operation",
+        "tame a wild beast"
+      ]},
+      { maxSeconds: 7776000, activities: [ // < 3 months
+        "write a thesis",
+        "put on a play",
+        "teach a man to fish and feed him for a lifetime"
+      ]},
+      { maxSeconds: 15552000, activities: [ // < 6 months
+        "train for a marathon",
+        "build a robot",
+        "finely age some cheese"
+      ]},
+      { maxSeconds: 31536000, activities: [ // < 1 year
+        "start your own shoe company",
+        "record an album",
+        "have a baby"
+      ]},
+      { maxSeconds: 63072000, activities: [ // < 2 years
+        "write a best-selling novel",
+        "travel the world",
+        "go to culinary school"
+      ]},
+      { maxSeconds: 94608000, activities: [ // < 3 years
+        "excavate a secret underground lair",
+        "go bowling 1000 times",
+        "learn a new language"
+      ]},
+      { maxSeconds: Infinity, activities: [ // > 3 years
+        "conquer the seven seas",
+        "rebuild the world in your image",
+        "construct a doomsday device",
+        "reevaluate your life choices"
+      ]}
+    ];
+
+    // Find the appropriate time range
+    const range = timeRanges.find(r => seconds < r.maxSeconds);
+    if (!range) {
+      return "do something amazing"; // Fallback option
+    }
     
-    // Select a random activity
-    const randomIndex = Math.floor(Math.random() * activities.length)
-    return activities[randomIndex]
+    // Select a random activity from the range
+    const randomIndex = Math.floor(Math.random() * range.activities.length);
+    return range.activities[randomIndex];
   }
 
   // List of available shoe types
