@@ -126,8 +126,14 @@ export const useCalculatorStore = defineStore('calculator', () => {
         const shoehornTimeSeconds = Math.max(1, shoePutOnTimeSeconds - SHOEHORN_TIMES[type]);
         
         const percentFactor = percentage / 100;
+        // Calculate time for this shoe type based on weekly outings
+        if (weeklyOutings.value === null) {
+            console.log('Warning: weeklyOutings is null in calculation');
+            return;
+        }
+        
         const timeForThisType = yearsWearingShoes * 52 * weeklyOutings.value * 2 * 
-                               shoePutOnTimeSeconds * percentFactor * shoeUsageMultiplier;
+            shoePutOnTimeSeconds * percentFactor * shoeUsageMultiplier;
         
         totalTimeSpent += timeForThisType;
         
