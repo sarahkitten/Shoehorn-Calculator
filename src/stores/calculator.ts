@@ -70,6 +70,129 @@ export const useCalculatorStore = defineStore('calculator', () => {
     recommendation.value = ''
   }
 
+  // Helper function to get default shoe time
+  function getShoeTime(type: string): number {
+    return SHOE_TIMES[type] || SHOE_TIMES['Sneakers']
+  }
+
+  // Calculate results for advanced mode
+  function calculateAdvancedResults() {
+    console.log('Starting advanced calculation with inputs:', {
+      age: age.value,
+      weeklyOutings: weeklyOutings.value,
+      putOnTime: putOnTime.value,
+      shoeDistribution: shoeDistribution.value,
+      learnAge: learnAge.value,
+      shoesOffAtHome: shoesOffAtHome.value,
+      ownsShoehorn: ownsShoehorn.value,
+      shoehornYears: shoehornYears.value
+    });
+
+    if (age.value === null || weeklyOutings.value === null || learnAge.value === null) {
+      console.log('Advanced calculation aborted: Missing required inputs');
+      return;
+    }
+
+    // Clear previous results
+    weirdnessMessages.value = []
+    
+    // Check for "weirdness" in inputs
+    detectWeirdness()
+    console.log('Weirdness detected:', weirdnessMessages.value);
+    
+    // Advanced specific weirdness
+    if (learnAge.value < 2) {
+      weirdnessMessages.value.push(`You learned to put on shoes at age ${learnAge.value}? That's impressively early. Are you sure you weren't still in diapers?`);
+    }
+    
+    if (putOnTime.value > 150) {
+      weirdnessMessages.value.push(`It takes you ${putOnTime.value} seconds to put on shoes? Are you trying to solve a puzzle box every time you leave the house?`);
+    }
+
+    // Calculate years wearing shoes (from learn age to current age)
+    const yearsWearingShoes = Math.max(0, age.value - learnAge.value);
+    
+    // Factor in taking shoes off inside the house
+    const shoeUsageMultiplier = shoesOffAtHome.value ? 1 : 1.5;  // If shoes stay on, fewer on/off cycles
+    
+    // Calculate time spent for each shoe type based on distribution
+    let totalTimeSpent = 0;
+    let totalTimeSavedWithShoehorn = 0;
+    
+    Object.entries(shoeDistribution.value).forEach(([type, percentage]) => {
+      if (percentage > 0) {
+        // Calculate time for this shoe type
+        const shoePutOnTimeSeconds = putOnTime.value; // Use custom time instead of defaults
+        const shoehornTimeSeconds = Math.max(1, shoePutOnTimeSeconds - SHOEHORN_TIMES[type]);
+        
+        const percentFactor = percentage / 100;
+        const timeForThisType = yearsWearingShoes * 52 * weeklyOutings.value * 2 * 
+                               shoePutOnTimeSeconds * percentFactor * shoeUsageMultiplier;
+        
+        totalTimeSpent += timeForThisType;
+        
+        // Calculate time saved with shoehorn for this type
+        const timeSavedForThisType = yearsWearingShoes * 52 * weeklyOutings.value * 2 * 
+                                    (shoePutOnTimeSeconds - shoehornTimeSeconds) * 
+                                    percentFactor * shoeUsageMultiplier;
+        
+        totalTimeSavedWithShoehorn += timeSavedForThisType;
+      }
+    });
+    
+    // Account for already owning a shoehorn
+    if (ownsShoehorn.value && shoehornYears.value !== null) {
+      const shoehornOwnershipYears = Math.min(shoehornYears.value, yearsWearingShoes);
+      const percentYearsWithShoehorn = shoehornOwnershipYears / yearsWearingShoes;
+      
+      // Reduce time saved by the proportion of life already using a shoehorn
+      totalTimeSavedWithShoehorn *= (1 - percentYearsWithShoehorn);
+    }
+    
+    // Set values
+    timeSpent.value = totalTimeSpent;
+    timeSaved.value = totalTimeSavedWithShoehorn;
+
+    console.log('Advanced calculation results:', {
+      yearsWearingShoes,
+      shoeUsageMultiplier,
+      timeSpent: timeSpent.value,
+      timeSaved: timeSaved.value,
+      formattedTimeSpent: formatTime(timeSpent.value),
+      formattedTimeSaved: formatTime(timeSaved.value)
+    });
+
+    // Generate shoe message based on distribution
+    generateAdvancedShoeMessage();
+    
+    // Set recommendation
+    setRecommendation();
+    console.log('Recommendation set:', recommendation.value);
+  }
+
+  // Generate shoe message for advanced mode based on shoe distribution
+  function generateAdvancedShoeMessage() {
+    // Find the shoe type with highest percentage
+    let highestPercentage = 0;
+    let dominantShoeType = 'Sneakers';
+    
+    Object.entries(shoeDistribution.value).forEach(([type, percentage]) => {
+      if (percentage > highestPercentage) {
+        highestPercentage = percentage;
+        dominantShoeType = type;
+      }
+    });
+
+    // If there's a dominant shoe type (>50%), use its message
+    if (highestPercentage > 50) {
+      shoeType.value = dominantShoeType;  // Set for message generation
+      setShoeMessage();
+    } else {
+      // Generic message for mixed shoe usage
+      shoeMessage.value = "You seem to have quite a varied shoe collection! A shoehorn can be particularly useful for those days when you're wearing your harder-to-put-on footwear.";
+    }
+  }
+
   // Calculate results for basic mode
   function calculateBasicResults() {
     console.log('Starting calculation with inputs:', {
@@ -280,6 +403,8 @@ export const useCalculatorStore = defineStore('calculator', () => {
     toggleMode,
     resetCalculator,
     calculateBasicResults,
+    calculateAdvancedResults,
+    getShoeTime,
     
     // Helpers
     formatTime

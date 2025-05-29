@@ -7,23 +7,39 @@ const router = useRouter();
 const calculatorStore = useCalculatorStore();
 
 console.log('ResultsView loaded with data:', {
+  mode: calculatorStore.mode,
   shoeType: calculatorStore.shoeType,
+  putOnTime: calculatorStore.putOnTime,
   timeSpent: calculatorStore.timeSpent,
   timeSaved: calculatorStore.timeSaved,
   formattedTimeSpent: calculatorStore.formatTime(calculatorStore.timeSpent),
   weirdnessMessages: calculatorStore.weirdnessMessages
 });
 
-// Compute the time per pair using the shoe time constants
+// Compute the time per pair considering both basic and advanced modes
 const timePerPair = computed(() => {
-  console.log('Computing timePerPair, shoeType:', calculatorStore.shoeType);
-  // Check if shoe type exists in SHOE_TIMES
-  if (!(calculatorStore.shoeType in SHOE_TIMES)) {
-    console.error('Invalid shoe type:', calculatorStore.shoeType);
-    return calculatorStore.formatTime(0);
+  if (calculatorStore.mode === 'advanced') {
+    // In advanced mode, use the custom time value from slider
+    return calculatorStore.formatTime(calculatorStore.putOnTime);
+  } else {
+    // In basic mode, use the shoe time constant
+    console.log('Computing timePerPair, shoeType:', calculatorStore.shoeType);
+    // Check if shoe type exists in SHOE_TIMES
+    if (!(calculatorStore.shoeType in SHOE_TIMES)) {
+      console.error('Invalid shoe type:', calculatorStore.shoeType);
+      return calculatorStore.formatTime(0);
+    }
+    // Simply use the shoe time constant directly
+    return calculatorStore.formatTime(SHOE_TIMES[calculatorStore.shoeType] || 0);
   }
-  // Simply use the shoe time constant directly
-  return calculatorStore.formatTime(SHOE_TIMES[calculatorStore.shoeType] || 0);
+});
+
+// Compute the shoe type display text for results
+const shoeTypeDisplay = computed(() => {
+  if (calculatorStore.mode === 'advanced') {
+    return 'shoes';
+  }
+  return calculatorStore.shoeType;
 });
 
 onMounted(() => {
@@ -80,7 +96,7 @@ const handleAdvancedMode = () => {
       <!-- Show calculation results -->
       <div class="time-results">
         <p>
-          Assuming it takes you {{ timePerPair }} to put on your {{ calculatorStore.shoeType }}, 
+          Assuming it takes you {{ timePerPair }} to put on your {{ shoeTypeDisplay }}, 
           you've spent <span class="highlight">{{ calculatorStore.formatTime(calculatorStore.timeSpent) }}</span> across your life, just putting on shoes.
         </p>
         

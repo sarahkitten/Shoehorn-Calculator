@@ -1,13 +1,38 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { useCalculatorStore } from '../stores/calculator';
-import { ref } from 'vue';
+import { ref, computed, watch } from 'vue';
 
 const router = useRouter();
 const calculatorStore = useCalculatorStore();
 
+// Error states
 const ageError = ref<string | null>(null);
 const outingsError = ref<string | null>(null);
+const learnAgeError = ref<string | null>(null);
+const shoehornYearsError = ref<string | null>(null);
+const shoeDistributionError = ref<string | null>(null);
+
+// Compute total shoe distribution percentage
+const totalShoeDistribution = computed(() => {
+  return Object.values(calculatorStore.shoeDistribution).reduce((sum, value) => sum + value, 0);
+});
+
+// Watch for changes in shoe type to update the default put on time
+watch(() => calculatorStore.shoeType, (newShoeType) => {
+  if (calculatorStore.mode === 'basic') {
+    calculatorStore.putOnTime = calculatorStore.getShoeTime(newShoeType);
+  }
+});
+
+// Initialize shoe distribution if empty
+const initShoeDistribution = () => {
+  if (Object.keys(calculatorStore.shoeDistribution).length === 0) {
+    calculatorStore.shoeTypes.forEach(type => {
+      calculatorStore.shoeDistribution[type] = type === calculatorStore.shoeType ? 100 : 0;
+    });
+  }
+};
 
 const validateForm = (): boolean => {
   let isValid = true;
@@ -27,36 +52,70 @@ const validateForm = (): boolean => {
   } else {
     outingsError.value = null;
   }
+
+  // Validate advanced mode fields
+  if (calculatorStore.mode === 'advanced') {
+    // Validate learn age
+    if (calculatorStore.learnAge === null) {
+      learnAgeError.value = 'Please enter the age when you learned to tie your shoes';
+      isValid = false;
+    } else if (calculatorStore.learnAge > calculatorStore.age) {
+      learnAgeError.value = 'This cannot be greater than your current age';
+      isValid = false;
+    } else {
+      learnAgeError.value = null;
+    }
+
+    // Validate shoehorn years if they own one
+    if (calculatorStore.ownsShoehorn && calculatorStore.shoehornYears === null) {
+      shoehornYearsError.value = 'Please enter how many years you have owned a shoehorn';
+      isValid = false;
+    } else if (calculatorStore.ownsShoehorn && calculatorStore.shoehornYears > calculatorStore.age) {
+      shoehornYearsError.value = 'This cannot be greater than your current age';
+      isValid = false;
+    } else {
+      shoehornYearsError.value = null;
+    }
+    
+    // Validate shoe distribution total is 100%
+    if (totalShoeDistribution.value !== 100) {
+      shoeDistributionError.value = 'Shoe distribution must total 100%';
+      isValid = false;
+    } else {
+      shoeDistributionError.value = null;
+    }
+  }
   
   return isValid;
 };
 
 const handleSubmit = () => {
   console.log('Submit button clicked');
-  console.log('Current values:', {
-    age: calculatorStore.age,
-    shoeType: calculatorStore.shoeType,
-    weeklyOutings: calculatorStore.weeklyOutings
-  });
+  console.log('Current mode:', calculatorStore.mode);
   
   if (validateForm()) {
     console.log('Validation successful, calculating results');
-    calculatorStore.calculateBasicResults();
+    if (calculatorStore.mode === 'advanced') {
+      calculatorStore.calculateAdvancedResults();
+    } else {
+      calculatorStore.calculateBasicResults();
+    }
     console.log('Calculation completed, redirecting to results');
-    console.log('Results:', {
-      timeSpent: calculatorStore.timeSpent,
-      timeSaved: calculatorStore.timeSaved
-    });
     router.push('/results');
   } else {
-    console.log('Validation failed', { ageError: ageError.value, outingsError: outingsError.value });
+    console.log('Validation failed');
   }
 };
 
 const handleAdvancedMode = () => {
   calculatorStore.toggleMode();
-  // For now, just submit with basic mode since we haven't implemented advanced mode yet
-  handleSubmit();
+  
+  // Initialize shoe distribution when switching to advanced mode
+  if (calculatorStore.mode === 'advanced') {
+    initShoeDistribution();
+    // Set putOnTime to the default for the selected shoe type
+    calculatorStore.putOnTime = calculatorStore.getShoeTime(calculatorStore.shoeType);
+  }
 };
 </script>
 
@@ -70,6 +129,7 @@ const handleAdvancedMode = () => {
       </p>
       
       <form @submit.prevent="handleSubmit" class="calculator-form">
+        <!-- Basic Info - Shown in both modes -->
         <div class="form-group">
           <label for="age">How old are you?</label>
           <input 
@@ -82,7 +142,7 @@ const handleAdvancedMode = () => {
           <p v-if="ageError" class="error">{{ ageError }}</p>
         </div>
         
-        <div class="form-group">
+        <div v-if="calculatorStore.mode === 'basic'" class="form-group">
           <label for="shoeType">What kind of shoes do you most often wear?</label>
           <select id="shoeType" v-model="calculatorStore.shoeType">
             <option v-for="type in calculatorStore.shoeTypes" :key="type" :value="type">
@@ -103,10 +163,91 @@ const handleAdvancedMode = () => {
           <p v-if="outingsError" class="error">{{ outingsError }}</p>
         </div>
         
+        <!-- Advanced Mode Fields -->
+        <template v-if="calculatorStore.mode === 'advanced'">
+          <div class="form-section">
+            <h2>Advanced Settings</h2>
+          </div>
+          
+          <div class="form-group">
+            <label for="putOnTime">How long does it take you to put your shoes on? ({{ calculatorStore.putOnTime }} seconds)</label>
+            <input 
+              type="range" 
+              id="putOnTime" 
+              v-model.number="calculatorStore.putOnTime"
+              min="1" 
+              max="250" 
+              class="slider"
+            />
+            <div class="slider-labels">
+              <span>1s</span>
+              <span>250s</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>How often have you worn each kind of shoe across your life? (Total: {{ totalShoeDistribution }}%)</label>
+            <p v-if="shoeDistributionError" class="error">{{ shoeDistributionError }}</p>
+            
+            <div v-for="type in calculatorStore.shoeTypes" :key="type" class="shoe-distribution-item">
+              <div class="shoe-distribution-label">
+                <label :for="`distribution-${type}`">{{ type }}</label>
+                <span>{{ calculatorStore.shoeDistribution[type] || 0 }}%</span>
+              </div>
+              <input 
+                type="range" 
+                :id="`distribution-${type}`" 
+                v-model.number="calculatorStore.shoeDistribution[type]" 
+                min="0" 
+                max="100" 
+                class="slider"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="learnAge">What age did you learn to put on/tie your shoes?</label>
+            <input 
+              type="number" 
+              id="learnAge" 
+              v-model.number="calculatorStore.learnAge"
+              min="0"
+              placeholder="Age in years"
+            />
+            <p v-if="learnAgeError" class="error">{{ learnAgeError }}</p>
+          </div>
+
+          <div class="form-group checkbox-group">
+            <label>
+              <input type="checkbox" v-model="calculatorStore.shoesOffAtHome" />
+              Do you take your shoes off in the house?
+            </label>
+          </div>
+
+          <div class="form-group checkbox-group">
+            <label>
+              <input type="checkbox" v-model="calculatorStore.ownsShoehorn" />
+              Do you already own a shoe horn?
+            </label>
+          </div>
+
+          <div v-if="calculatorStore.ownsShoehorn" class="form-group">
+            <label for="shoehornYears">How many years have you had it?</label>
+            <input 
+              type="number" 
+              id="shoehornYears" 
+              v-model.number="calculatorStore.shoehornYears"
+              min="0"
+              placeholder="Years"
+            />
+            <p v-if="shoehornYearsError" class="error">{{ shoehornYearsError }}</p>
+          </div>
+        </template>
+        
         <div class="buttons">
           <button type="submit" class="btn btn-primary">Calculate</button>
           <button type="button" @click="handleAdvancedMode" class="btn btn-secondary">
-            Advanced Mode
+            {{ calculatorStore.mode === 'basic' ? 'Advanced Mode' : 'Basic Mode' }}
           </button>
         </div>
       </form>
@@ -127,6 +268,11 @@ h1 {
   margin-bottom: 1rem;
 }
 
+h2 {
+  font-size: 1.8rem;
+  margin: 1rem 0;
+}
+
 .intro {
   font-size: 1.2rem;
   margin-bottom: 2rem;
@@ -141,10 +287,25 @@ h1 {
   margin: 0 auto;
 }
 
+.form-section {
+  margin-top: 1rem;
+  text-align: center;
+}
+
 .form-group {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+.checkbox-group {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.checkbox-group input {
+  margin-right: 0.5rem;
 }
 
 label {
@@ -156,6 +317,50 @@ input, select {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 10px;
+  border-radius: 5px;
+  background: #d3d3d3;
+  outline: none;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #4CAF50;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #4CAF50;
+  cursor: pointer;
+}
+
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.shoe-distribution-item {
+  margin-bottom: 0.5rem;
+}
+
+.shoe-distribution-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .error {
