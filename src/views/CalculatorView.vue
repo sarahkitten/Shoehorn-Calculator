@@ -18,6 +18,34 @@ const totalShoeDistribution = computed(() => {
   return Object.values(calculatorStore.shoeDistribution).reduce((sum, value) => sum + value, 0);
 });
 
+// Calculate the maximum value each slider can have based on current state
+const getMaxAllowed = (shoeType: string) => {
+  const currentValue = calculatorStore.shoeDistribution[shoeType] || 0;
+  const totalWithoutCurrent = totalShoeDistribution.value - currentValue;
+  const availableRemaining = 100 - totalWithoutCurrent;
+  
+  return availableRemaining;
+};
+
+// Handle slider changes with constraint enforcement
+const handleSliderChange = (shoeType: string, newValue: number) => {
+  const maxAllowed = getMaxAllowed(shoeType);
+  
+  // Constrain the new value - don't let it exceed what would make total > 100%
+  const constrainedValue = Math.min(newValue, maxAllowed);
+  
+  // Update the store
+  calculatorStore.shoeDistribution[shoeType] = constrainedValue;
+  
+  // Force the slider to the constrained position if it was dragged too far
+  if (newValue > maxAllowed) {
+    const slider = document.getElementById(`distribution-${shoeType}`) as HTMLInputElement;
+    if (slider) {
+      slider.value = constrainedValue.toString();
+    }
+  }
+};
+
 // Watch for changes in shoe type to update the default put on time
 watch(() => calculatorStore.shoeType, (newShoeType) => {
   if (calculatorStore.mode === 'basic') {
@@ -29,7 +57,7 @@ watch(() => calculatorStore.shoeType, (newShoeType) => {
 const initShoeDistribution = () => {
   if (Object.keys(calculatorStore.shoeDistribution).length === 0) {
     calculatorStore.shoeTypes.forEach(type => {
-      calculatorStore.shoeDistribution[type] = type === calculatorStore.shoeType ? 100 : 0;
+      calculatorStore.shoeDistribution[type] = 0;
     });
   }
 };
@@ -194,14 +222,18 @@ const handleAdvancedMode = () => {
                 <label :for="`distribution-${type}`">{{ type }}</label>
                 <span>{{ calculatorStore.shoeDistribution[type] || 0 }}%</span>
               </div>
-              <input 
-                type="range" 
-                :id="`distribution-${type}`" 
-                v-model.number="calculatorStore.shoeDistribution[type]" 
-                min="0" 
-                max="100" 
-                class="slider"
-              />
+              <div class="constrained-slider-container">
+                <input 
+                  type="range" 
+                  :id="`distribution-${type}`" 
+                  :value="calculatorStore.shoeDistribution[type] || 0"
+                  min="0" 
+                  max="100"
+                  @input="handleSliderChange(type, parseInt($event.target.value))"
+                  class="slider constrained-slider"
+                  :style="{ '--max-allowed': getMaxAllowed(type) }"
+                />
+              </div>
             </div>
           </div>
 
@@ -402,5 +434,51 @@ input, select {
 
 .btn-secondary:hover {
   background-color: #e0e0e0;
+}
+
+.constrained-slider-container {
+  position: relative;
+  width: 100%;
+  --thumb-width: 20px;
+  --track-padding: 23px;
+}
+
+.constrained-slider {
+  position: relative;
+}
+
+.constrained-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #4CAF50;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+}
+
+.constrained-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #4CAF50;
+  cursor: pointer;
+  border: none;
+  position: relative;
+  z-index: 2;
+}
+
+.constrained-slider::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: calc(var(--thumb-width) + (var(--max-allowed) * (100% - (var(--track-padding) + var(--thumb-width))) / 100));
+  right: 0;
+  height: 100%;
+  background: rgba(255, 0, 0, 0.2);
+  pointer-events: none;
+  border-radius: 0 5px 5px 0;
 }
 </style>
