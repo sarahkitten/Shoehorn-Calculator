@@ -87,7 +87,7 @@ const validateForm = (): boolean => {
     if (calculatorStore.learnAge === null) {
       learnAgeError.value = 'Please enter the age when you learned to tie your shoes';
       isValid = false;
-    } else if (calculatorStore.learnAge > calculatorStore.age) {
+    } else if (calculatorStore.age !== null && calculatorStore.learnAge > calculatorStore.age) {
       learnAgeError.value = 'This cannot be greater than your current age';
       isValid = false;
     } else {
@@ -98,7 +98,7 @@ const validateForm = (): boolean => {
     if (calculatorStore.ownsShoehorn && calculatorStore.shoehornYears === null) {
       shoehornYearsError.value = 'Please enter how many years you have owned a shoehorn';
       isValid = false;
-    } else if (calculatorStore.ownsShoehorn && calculatorStore.shoehornYears > calculatorStore.age) {
+    } else if (calculatorStore.ownsShoehorn && calculatorStore.shoehornYears !== null && calculatorStore.age !== null && calculatorStore.shoehornYears > calculatorStore.age) {
       shoehornYearsError.value = 'This cannot be greater than your current age';
       isValid = false;
     } else {
@@ -229,7 +229,7 @@ const handleAdvancedMode = () => {
                   :value="calculatorStore.shoeDistribution[type] || 0"
                   min="0" 
                   max="100"
-                  @input="handleSliderChange(type, parseInt($event.target.value))"
+                  @input="handleSliderChange(type, parseInt(($event.target as HTMLInputElement)?.value || '0'))"
                   class="slider constrained-slider"
                   :style="{ '--max-allowed': getMaxAllowed(type) }"
                 />
