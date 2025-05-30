@@ -43,12 +43,15 @@ body {
   color: var(--color-text);
   background-color: var(--color-background);
   line-height: 1.6;
+  height: 100vh;
+  overflow: hidden;
 }
 
 #app {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 header {
@@ -84,6 +87,8 @@ header {
 main {
   flex: 1;
   padding: 2rem 0;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 footer {
