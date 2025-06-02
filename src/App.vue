@@ -12,7 +12,21 @@ import { RouterView } from 'vue-router'
     </div>
   </header>
 
-  <RouterView />
+  <main class="main-content">
+    <div class="content-container">
+      <div class="mobile-border-left"></div>
+      <div class="background-left">
+        <div class="border-left"></div>
+      </div>
+      <div class="router-content">
+        <RouterView />
+      </div>
+      <div class="background-right">
+        <div class="border-right"></div>
+      </div>
+      <div class="mobile-border-right"></div>
+    </div>
+  </main>
   
   <footer>
     <div class="footer-content">
@@ -39,7 +53,7 @@ import { RouterView } from 'vue-router'
 }
 
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: 'Georgia', 'Times New Roman', 'Times', serif;
   color: var(--color-text);
   background-color: var(--color-background);
   line-height: 1.6;
@@ -86,16 +100,146 @@ header {
 
 main {
   flex: 1;
-  padding: 2rem 0;
   overflow-y: auto;
   min-height: 0;
+}
+
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.content-container {
+  display: flex;
+  min-height: 100%;
+  position: relative;
+}
+
+.background-left,
+.background-right {
+  display: none;
+}
+
+.border-left,
+.border-right {
+  display: none;
+}
+
+.mobile-border-left,
+.mobile-border-right {
+  display: block;
+  width: 20px;
+  flex-shrink: 0;
+  background-image: url('./assets/shoehorn-border.png');
+  background-repeat: repeat-y;
+  background-position: center;
+  background-size: contain;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.mobile-border-left {
+  left: 0;
+}
+
+.mobile-border-right {
+  right: 0;
+}
+
+.router-content {
+  flex: 1;
+  padding: 2rem 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  position: relative;
+}
+
+.router-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('./assets/shoehorn-bg-center.png');
+  background-repeat: repeat;
+  background-position: center;
+  background-size: 250px 430px;
+  opacity: 0.2;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Desktop view with background images */
+@media (min-width: 1200px) {
+  .content-container {
+    justify-content: center;
+  }
+  
+  /* Hide mobile borders on desktop */
+  .mobile-border-left,
+  .mobile-border-right {
+    display: none;
+  }
+  
+  .background-left,
+  .background-right {
+    display: block;
+    width: 250px;
+    flex-shrink: 0;
+    background-repeat: repeat-y;
+    background-position: center;
+    background-size: contain;
+    position: relative;
+  }
+  
+  .border-left,
+  .border-right {
+    display: block;
+    width: 20px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background-repeat: repeat-y;
+    background-position: center;
+    background-size: contain;
+    z-index: 1;
+  }
+  
+  .background-left {
+    background-image: url('./assets/shoehorn-bg-left.png');
+    order: 1;
+  }
+  
+  .border-left {
+    background-image: url('./assets/shoehorn-border.png');
+    right: -10px;
+  }
+  
+  .router-content {
+    order: 2;
+    padding: 2rem 2rem;
+  }
+  
+  .border-right {
+    background-image: url('./assets/shoehorn-border.png');
+    left: -10px;
+  }
+  
+  .background-right {
+    background-image: url('./assets/shoehorn-bg-right.png');
+    order: 3;
+  }
 }
 
 footer {
   background-color: #333;
   color: white;
   padding: 1rem 0;
-  margin-top: 2rem;
 }
 
 .footer-content {

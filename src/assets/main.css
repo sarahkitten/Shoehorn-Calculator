@@ -2,8 +2,8 @@
 
 /* Global styles */
 :root {
-  --font-heading: 'Arial', sans-serif;
-  --font-body: 'Arial', sans-serif;
+  --font-heading: 'Georgia', 'Times New Roman', 'Times', serif;
+  --font-body: 'Georgia', 'Times New Roman', 'Times', serif;
   --color-primary: #4CAF50;
   --color-primary-dark: #3e8e41;
   --color-secondary: #f8f9fa;
@@ -48,6 +48,11 @@ a:hover {
 
 button {
   cursor: pointer;
+  font-family: var(--font-body);
+}
+
+input, select, textarea, button {
+  font-family: var(--font-body);
 }
 
 /* Container class */

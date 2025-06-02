@@ -150,7 +150,9 @@ const handleAdvancedMode = () => {
 <template>
   <main>
     <div class="calculator-container">
-      <h1>Shoehorn Time Calculator</h1>
+      <h1>
+        Shoehorn Time Ca<span class="shoehorn-l"></span>culator
+      </h1>
       <p class="intro">
         How much time have you spent putting on shoes throughout your life? 
         And how much time could you have saved with a shoehorn? Let's find out!
@@ -300,6 +302,18 @@ h1 {
   margin-bottom: 1rem;
 }
 
+.shoehorn-l {
+  display: inline-block;
+  width: 0.3em;
+  height: 1em;
+  background-image: url('../assets/shoehorn-l.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  vertical-align: -2px;
+  margin: 0 0.05em;
+}
+
 h2 {
   font-size: 1.8rem;
   margin: 1rem 0;
@@ -349,10 +363,12 @@ input, select {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
+  font-family: 'Georgia', 'Times New Roman', 'Times', serif;
 }
 
 .slider {
   -webkit-appearance: none;
+  appearance: none;
   width: 100%;
   height: 10px;
   border-radius: 5px;
@@ -415,6 +431,7 @@ input, select {
   cursor: pointer;
   font-size: 1rem;
   font-weight: bold;
+  font-family: 'Georgia', 'Times New Roman', 'Times', serif;
   transition: background-color 0.3s;
 }
 

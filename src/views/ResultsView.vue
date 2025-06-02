@@ -75,7 +75,7 @@ const handleAdvancedMode = () => {
 <template>
   <main>
     <div class="results-container">
-      <h1>Your Shoe Time Results</h1>
+      <h1>Your Shoe Time Resu<span class="shoehorn-l"></span>ts</h1>
       
       <!-- Display any weirdness messages -->
       <div v-if="calculatorStore.weirdnessMessages.length > 0" class="weirdness-messages">
@@ -139,6 +139,18 @@ const handleAdvancedMode = () => {
 h1 {
   font-size: 2.5rem;
   margin-bottom: 2rem;
+}
+
+.shoehorn-l {
+  display: inline-block;
+  width: 0.3em;
+  height: 1em;
+  background-image: url('../assets/shoehorn-l.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  vertical-align: -2px;
+  margin: 0 0.05em;
 }
 
 .weirdness-messages {
@@ -232,6 +244,7 @@ h1 {
   cursor: pointer;
   font-size: 1rem;
   font-weight: bold;
+  font-family: 'Georgia', 'Times New Roman', 'Times', serif;
   transition: background-color 0.3s;
 }
 
