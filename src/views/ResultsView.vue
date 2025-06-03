@@ -1,20 +1,14 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { useCalculatorStore, SHOE_TIMES } from '../stores/calculator';
-import { onMounted, computed } from 'vue';
+import { onMounted, onUnmounted, computed, ref, watch } from 'vue';
 
 const router = useRouter();
 const calculatorStore = useCalculatorStore();
 
-console.log('ResultsView loaded with data:', {
-  mode: calculatorStore.mode,
-  shoeType: calculatorStore.shoeType,
-  putOnTime: calculatorStore.putOnTime,
-  timeSpent: calculatorStore.timeSpent,
-  timeSaved: calculatorStore.timeSaved,
-  formattedTimeSpent: calculatorStore.formatTime(calculatorStore.timeSpent),
-  weirdnessMessages: calculatorStore.weirdnessMessages
-});
+// State for share functionality
+const showShareModal = ref(false);
+const shareMessage = ref('');
 
 // Compute the time per pair considering both basic and advanced modes
 const timePerPair = computed(() => {
@@ -70,6 +64,121 @@ const handleAdvancedMode = () => {
   calculatorStore.toggleMode();
   router.push('/');
 };
+
+// Generate share text
+const generateShareText = () => {
+  const timeSpent = calculatorStore.formatTime(calculatorStore.timeSpent);
+  const timeSaved = calculatorStore.formatTime(calculatorStore.timeSaved);
+  
+  let shareText = `🦶 I just calculated my lifetime shoe-putting-on time!\n\n`;
+  shareText += `I've spent ${timeSpent} of my life putting on shoes! `;
+  
+  if (calculatorStore.timeSaved > 0) {
+    shareText += `With a shoehorn, I could have saved ${timeSaved}! `;
+  }
+  
+  shareText += `\n\nCalculate yours: ${window.location.origin}\n#ShoeHornCalculator #TimeOptimization`;
+  
+  return shareText;
+};
+
+// Handle share button click
+const handleShare = async () => {
+  const shareText = generateShareText();
+  const shareData = {
+    title: 'My Shoehorn Time Calculator Results',
+    text: shareText,
+    url: window.location.origin
+  };
+
+  // Only use Web Share API on mobile devices (not desktop)
+  // This prevents the macOS share popup that users might dismiss
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  
+  if (isMobile && navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+    try {
+      await navigator.share(shareData);
+      return;
+    } catch (err) {
+      console.log('Web Share API failed, falling back to modal:', err);
+    }
+  }
+
+  // Show custom share modal (for desktop or when Web Share API fails)
+  showShareModal.value = true;
+};
+
+// Copy to clipboard
+const copyToClipboard = async () => {
+  const shareText = generateShareText();
+  
+  try {
+    await navigator.clipboard.writeText(shareText);
+    shareMessage.value = 'Results copied to clipboard! Now you can share on social media.';
+    setTimeout(() => {
+      shareMessage.value = '';
+    }, 4000);
+  } catch (err) {
+    console.error('Failed to copy to clipboard:', err);
+    shareMessage.value = 'Failed to copy. Please try again.';
+    setTimeout(() => shareMessage.value = '', 3000);
+  }
+};
+
+// Social media sharing functions
+const shareOnTwitter = () => {
+  const shareText = generateShareText();
+  console.log('Share text:', shareText);
+  const text = encodeURIComponent(shareText);
+  const url = `https://twitter.com/intent/tweet?text=${text}`;
+  console.log('Twitter URL:', url);
+  window.open(url, '_blank', 'width=600,height=400');
+};
+
+const shareOnFacebook = () => {
+  // Facebook sharing - note that Facebook no longer supports pre-filled text due to policy changes
+  // We'll share the URL and let users add their own text
+  const url = encodeURIComponent(window.location.origin);
+  const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+  console.log('Facebook URL:', fbUrl);
+  window.open(fbUrl, '_blank', 'width=600,height=400');
+};
+
+const shareOnLinkedIn = () => {
+  // LinkedIn sharing - LinkedIn has deprecated many sharing parameters
+  // We'll use the basic sharing URL format
+  const url = encodeURIComponent(window.location.origin);
+  const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+  console.log('LinkedIn URL:', linkedInUrl);
+  window.open(linkedInUrl, '_blank', 'width=600,height=400');
+};
+
+// Close modal
+const closeShareModal = () => {
+  showShareModal.value = false;
+  shareMessage.value = '';
+};
+
+// Handle escape key to close modal
+const handleKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape' && showShareModal.value) {
+    closeShareModal();
+  }
+};
+
+// Watch for modal state changes to add/remove event listeners
+watch(showShareModal, (newValue) => {
+  if (newValue) {
+    document.addEventListener('keydown', handleKeydown);
+  } else {
+    document.removeEventListener('keydown', handleKeydown);
+  }
+});
+
+// Cleanup event listener on component unmount
+onUnmounted(() => {
+  document.removeEventListener('keydown', handleKeydown);
+});
 </script>
 
 <template>
@@ -122,7 +231,45 @@ const handleAdvancedMode = () => {
         <button @click="handleTryAgain" class="btn btn-secondary">
           {{ calculatorStore.mode === 'advanced' ? 'Try Again' : 'Calculate Again' }}
         </button>
-        <button class="btn btn-share">Share Results</button>
+        <button @click="handleShare" class="btn btn-share">
+          Share Results
+        </button>
+      </div>
+    </div>
+    
+    <!-- Share modal -->
+    <div v-if="showShareModal" class="share-modal" @click="closeShareModal">
+      <div class="share-modal-content" @click.stop>
+        <span @click="closeShareModal" class="close-modal">&times;</span>
+        <h2>Share Your Results</h2>
+        <p class="share-description">Share your shoe time results with friends or on social media!</p>
+        
+        <!-- Copy link button - make it prominent -->
+        <button @click="copyToClipboard" class="btn btn-copy-link primary-share">
+          📋 Copy Results to Clipboard
+        </button>
+        
+        <!-- Share message display -->
+        <div v-if="shareMessage" class="share-message">
+          {{ shareMessage }}
+        </div>
+        
+        <!-- Social media buttons -->
+        <div class="social-share-buttons">
+          <button @click="shareOnFacebook" class="social-share-btn facebook">
+            Share on Facebook
+          </button>
+          <button @click="shareOnLinkedIn" class="social-share-btn linkedin">
+            Share on LinkedIn
+          </button>
+          <button @click="shareOnTwitter" class="social-share-btn twitter">
+            Share on X
+          </button>
+        </div>
+        
+        <p class="share-note">
+          <em>Paste from clipboard to share your results!</em>
+        </p>
       </div>
     </div>
   </main>
@@ -273,5 +420,142 @@ h1 {
 
 .btn-share:hover {
   background-color: #344e86;
+}
+
+.share-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.share-modal-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+}
+
+.close-modal {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  cursor: pointer;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #666;
+  line-height: 1;
+  z-index: 1001;
+}
+
+.close-modal:hover {
+  color: #333;
+}
+
+.social-share-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.social-share-btn {
+  padding: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  transition: background-color 0.3s;
+}
+
+.twitter {
+  background-color: #1da1f2;
+}
+
+.twitter:hover {
+  background-color: #1991db;
+}
+
+.facebook {
+  background-color: #3b5998;
+}
+
+.facebook:hover {
+  background-color: #344e86;
+}
+
+.linkedin {
+  background-color: #0077b5;
+}
+
+.linkedin:hover {
+  background-color: #006494;
+}
+
+.btn-copy-link {
+  background-color: #4CAF50;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.btn-copy-link:hover {
+  background-color: #45a049;
+}
+
+.primary-share {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  padding: 1rem 1.5rem;
+}
+
+.share-description {
+  margin-bottom: 2rem;
+}
+
+.share-message {
+  margin: 1rem 0;
+  font-style: italic;
+  color: #333;
+}
+
+.share-note {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* Responsive adjustments for share modal */
+@media (max-width: 768px) {
+  .share-modal-content {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .social-share-buttons {
+    gap: 0.75rem;
+  }
+
+  .social-share-btn {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
 }
 </style>
