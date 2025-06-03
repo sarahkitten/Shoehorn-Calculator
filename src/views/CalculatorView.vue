@@ -83,23 +83,17 @@ const validateForm = (): boolean => {
 
   // Validate advanced mode fields
   if (calculatorStore.mode === 'advanced') {
-    // Validate learn age
+    // Validate learn age (only check if null, allow any value including negatives or higher than age)
     if (calculatorStore.learnAge === null) {
       learnAgeError.value = 'Please enter the age when you learned to tie your shoes';
-      isValid = false;
-    } else if (calculatorStore.age !== null && calculatorStore.learnAge > calculatorStore.age) {
-      learnAgeError.value = 'This cannot be greater than your current age';
       isValid = false;
     } else {
       learnAgeError.value = null;
     }
 
-    // Validate shoehorn years if they own one
+    // Validate shoehorn years if they own one (only check if null, allow any value)
     if (calculatorStore.ownsShoehorn && calculatorStore.shoehornYears === null) {
       shoehornYearsError.value = 'Please enter how many years you have owned a shoehorn';
-      isValid = false;
-    } else if (calculatorStore.ownsShoehorn && calculatorStore.shoehornYears !== null && calculatorStore.age !== null && calculatorStore.shoehornYears > calculatorStore.age) {
-      shoehornYearsError.value = 'This cannot be greater than your current age';
       isValid = false;
     } else {
       shoehornYearsError.value = null;
@@ -166,7 +160,6 @@ const handleAdvancedMode = () => {
             type="number" 
             id="age" 
             v-model.number="calculatorStore.age"
-            min="0"
             placeholder="Age in years"
           />
           <p v-if="ageError" class="error">{{ ageError }}</p>
@@ -187,7 +180,6 @@ const handleAdvancedMode = () => {
             type="number" 
             id="outings" 
             v-model.number="calculatorStore.weeklyOutings"
-            min="0"
             placeholder="Times per week"
           />
           <p v-if="outingsError" class="error">{{ outingsError }}</p>
@@ -245,7 +237,6 @@ const handleAdvancedMode = () => {
               type="number" 
               id="learnAge" 
               v-model.number="calculatorStore.learnAge"
-              min="0"
               placeholder="Age in years"
             />
             <p v-if="learnAgeError" class="error">{{ learnAgeError }}</p>
@@ -271,7 +262,6 @@ const handleAdvancedMode = () => {
               type="number" 
               id="shoehornYears" 
               v-model.number="calculatorStore.shoehornYears"
-              min="0"
               placeholder="Years"
             />
             <p v-if="shoehornYearsError" class="error">{{ shoehornYearsError }}</p>

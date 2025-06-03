@@ -101,12 +101,43 @@ export const useCalculatorStore = defineStore('calculator', () => {
     console.log('Weirdness detected:', weirdnessMessages.value);
     
     // Advanced specific weirdness
-    if (learnAge.value < 2) {
-      weirdnessMessages.value.push(`You learned to put on shoes at age ${learnAge.value}? That's impressively early. Are you sure you weren't still in diapers?`);
+    
+    // Put on time checks
+    if (putOnTime.value >= 1 && putOnTime.value <= 3 && shoeType.value !== 'No Shoes') {
+      weirdnessMessages.value.push(`Holy moly, you are fast at putting your shoes on! You ARE telling the truth, right? We don't want anyone besmirching the integrity of our shoe horn time calculator.`);
     }
     
-    if (putOnTime.value > 150) {
-      weirdnessMessages.value.push(`It takes you ${putOnTime.value} seconds to put on shoes? Are you trying to solve a puzzle box every time you leave the house?`);
+    if (putOnTime.value >= 247 && putOnTime.value <= 250) {
+      weirdnessMessages.value.push(`${putOnTime.value} seconds to put your shoes on? Do you often find yourself running late for things? You could use a shoe horn more than most.`);
+    }
+    
+    // Learn age checks
+    if (learnAge.value !== null) {
+      if (learnAge.value < 0) {
+        weirdnessMessages.value.push(`Come on, do you take us for chumps? You didn't learn to tie your shoes at ${learnAge.value} years old. You'd have to be a multidimensional super baby to pull that off. Which you aren't. ...Unless?`);
+      } else if (learnAge.value <= 2) {
+        weirdnessMessages.value.push(`You learned to tie your shoes at ${learnAge.value}? Very impressive. Most people haven't even learned to go to the bathroom correctly at that age, let alone tie knots. Prodigies like you benefit the most from saving even a little bit of time.`);
+      } else if (learnAge.value >= 10) {
+        weirdnessMessages.value.push(`You took longer to learn to tie your shoes than most! Not a big deal though. We'll all be using shoe horns in the age of the future.`);
+      }
+    }
+    
+    // Shoes off at home check
+    if (!shoesOffAtHome.value) {
+      weirdnessMessages.value.push(`You leave your shoes on in the house? Some people are going to be very upset with you for that one. But it does save you a bit of time here. Priorities, priorities.`);
+    }
+    
+    // Shoehorn ownership checks
+    if (ownsShoehorn.value) {
+      weirdnessMessages.value.push(`Glad to hear you already own a shoe horn! Many can learn from your example. You are a blinding beacon of efficiency and optimization.`);
+      
+      if (shoehornYears.value !== null && age.value !== null) {
+        if (shoehornYears.value < 0) {
+          weirdnessMessages.value.push(`Come on, do you take us for chumps? You haven't owned a shoe horn for negative ${Math.abs(shoehornYears.value)} years. You'd have to own a multidimensional, time-bending, super shoe horn to pull that off. In which case, we're really jealous.`);
+        } else if (shoehornYears.value > age.value) {
+          weirdnessMessages.value.push(`You've owned a shoe horn for ${shoehornYears.value} years? That's longer than you've been alive. Either there's a sacred shoe horn heirloom that's being passed down in your family, or you're lying to us.`);
+        }
+      }
     }
 
     // Calculate years wearing shoes (from learn age to current age)

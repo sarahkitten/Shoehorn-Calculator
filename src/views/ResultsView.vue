@@ -170,7 +170,7 @@ h1 {
   font-size: 1.2rem;
   margin-bottom: 2rem;
   padding: 1rem;
-  background-color: #f0f8ff;
+  background-color: #f3e8ff;
   border-radius: 8px;
 }
 
