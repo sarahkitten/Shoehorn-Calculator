@@ -77,7 +77,7 @@ const generateShareText = () => {
     shareText += `With a shoehorn, I could have saved ${timeSaved}! `;
   }
   
-  shareText += `\n\nCalculate yours: ${window.location.origin}\n#ShoeHornCalculator #TimeOptimization`;
+  shareText += `\n\nCalculate yours: https://sarahkitten.github.io/Shoehorn-Calculator\n#ShoeHornCalculator #TimeOptimization`;
   
   return shareText;
 };
@@ -88,7 +88,7 @@ const handleShare = async () => {
   const shareData = {
     title: 'My Shoehorn Time Calculator Results',
     text: shareText,
-    url: window.location.origin
+    url: 'https://sarahkitten.github.io/Shoehorn-Calculator'
   };
 
   // Only use Web Share API on mobile devices (not desktop)
@@ -138,7 +138,7 @@ const shareOnTwitter = () => {
 const shareOnFacebook = () => {
   // Facebook sharing - note that Facebook no longer supports pre-filled text due to policy changes
   // We'll share the URL and let users add their own text
-  const url = encodeURIComponent(window.location.origin);
+  const url = encodeURIComponent('https://sarahkitten.github.io/Shoehorn-Calculator');
   const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
   console.log('Facebook URL:', fbUrl);
   window.open(fbUrl, '_blank', 'width=600,height=400');
@@ -147,7 +147,7 @@ const shareOnFacebook = () => {
 const shareOnLinkedIn = () => {
   // LinkedIn sharing - LinkedIn has deprecated many sharing parameters
   // We'll use the basic sharing URL format
-  const url = encodeURIComponent(window.location.origin);
+  const url = encodeURIComponent('https://sarahkitten.github.io/Shoehorn-Calculator');
   const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
   console.log('LinkedIn URL:', linkedInUrl);
   window.open(linkedInUrl, '_blank', 'width=600,height=400');
