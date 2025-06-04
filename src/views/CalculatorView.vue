@@ -255,7 +255,7 @@ const handleAdvancedMode = () => {
           <div class="form-group checkbox-group">
             <label>
               <input type="checkbox" v-model="calculatorStore.ownsShoehorn" />
-              Do you already own a shoe horn?
+              Do you already own a shoehorn?
             </label>
           </div>
 

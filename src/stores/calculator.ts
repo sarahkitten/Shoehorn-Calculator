@@ -104,11 +104,11 @@ export const useCalculatorStore = defineStore('calculator', () => {
     
     // Put on time checks
     if (putOnTime.value >= 1 && putOnTime.value <= 3 && shoeType.value !== 'No Shoes') {
-      weirdnessMessages.value.push(`Holy moly, you are fast at putting your shoes on! You ARE telling the truth, right? We don't want anyone besmirching the integrity of our shoe horn time calculator.`);
+      weirdnessMessages.value.push(`Holy moly, you are fast at putting your shoes on! You ARE telling the truth, right? We don't want anyone besmirching the integrity of our shoehorn time calculator.`);
     }
     
     if (putOnTime.value >= 247 && putOnTime.value <= 250) {
-      weirdnessMessages.value.push(`${putOnTime.value} seconds to put your shoes on? Do you often find yourself running late for things? You could use a shoe horn more than most.`);
+      weirdnessMessages.value.push(`${putOnTime.value} seconds to put your shoes on? Do you often find yourself running late for things? You could use a shoehorn more than most.`);
     }
     
     // Learn age checks
@@ -118,7 +118,7 @@ export const useCalculatorStore = defineStore('calculator', () => {
       } else if (learnAge.value <= 2) {
         weirdnessMessages.value.push(`You learned to tie your shoes at ${learnAge.value}? Very impressive. Most people haven't even learned to go to the bathroom correctly at that age, let alone tie knots. Prodigies like you benefit the most from saving even a little bit of time.`);
       } else if (learnAge.value >= 10) {
-        weirdnessMessages.value.push(`You took longer to learn to tie your shoes than most! Not a big deal though. We'll all be using shoe horns in the age of the future.`);
+        weirdnessMessages.value.push(`You took longer to learn to tie your shoes than most! Not a big deal though. We'll all be using shoehorns in the age of the future.`);
       }
     }
     
@@ -129,13 +129,13 @@ export const useCalculatorStore = defineStore('calculator', () => {
     
     // Shoehorn ownership checks
     if (ownsShoehorn.value) {
-      weirdnessMessages.value.push(`Glad to hear you already own a shoe horn! Many can learn from your example. You are a blinding beacon of efficiency and optimization.`);
+      weirdnessMessages.value.push(`Glad to hear you already own a shoehorn! Many can learn from your example. You are a blinding beacon of efficiency and optimization.`);
       
       if (shoehornYears.value !== null && age.value !== null) {
         if (shoehornYears.value < 0) {
-          weirdnessMessages.value.push(`Come on, do you take us for chumps? You haven't owned a shoe horn for negative ${Math.abs(shoehornYears.value)} years. You'd have to own a multidimensional, time-bending, super shoe horn to pull that off. In which case, we're really jealous.`);
+          weirdnessMessages.value.push(`Come on, do you take us for chumps? You haven't owned a shoehorn for negative ${Math.abs(shoehornYears.value)} years. You'd have to own a multidimensional, time-bending, super shoehorn to pull that off. In which case, we're really jealous.`);
         } else if (shoehornYears.value > age.value) {
-          weirdnessMessages.value.push(`You've owned a shoe horn for ${shoehornYears.value} years? That's longer than you've been alive. Either there's a sacred shoe horn heirloom that's being passed down in your family, or you're lying to us.`);
+          weirdnessMessages.value.push(`You've owned a shoehorn for ${shoehornYears.value} years? That's longer than you've been alive. Either there's a sacred shoehorn heirloom that's being passed down in your family, or you're lying to us.`);
         }
       }
     }
@@ -298,19 +298,19 @@ export const useCalculatorStore = defineStore('calculator', () => {
   function detectWeirdness() {
     if (age.value !== null) {
       if (age.value >= 0 && age.value <= 6) {
-        weirdnessMessages.value.push(`Are you really ${age.value} years old? Can you put on shoes without help? Do you have the financial independence to even purchase a shoe horn? Oh well, no judgement.`)
+        weirdnessMessages.value.push(`Are you really ${age.value} years old? Can you put on shoes without help? Do you have the financial independence to even purchase a shoehorn? Oh well, no judgement.`)
       } else if (age.value < 0) {
         weirdnessMessages.value.push(`Come on, do you take us for chumps? You aren't ${age.value} years old. You'd have to be a multidimensional super baby to pull that off. Which you aren't. ...Unless?`)
       } else if (age.value >= 80 && age.value < 150) {
         weirdnessMessages.value.push(`Wow! Congratulations on living for so long! With so many years under your belt, you must have put on a lot of shoes.`)
       } else if (age.value >= 150) {
-        weirdnessMessages.value.push(`${age.value} years old? Wow, we didn't realize an eternal time deity like yourself had any interest in shoe horns.`)
+        weirdnessMessages.value.push(`${age.value} years old? Wow, we didn't realize an eternal time deity like yourself had any interest in shoehorns.`)
       }
     }
 
     if (weeklyOutings.value !== null) {
       if (weeklyOutings.value === 0) {
-        weirdnessMessages.value.push(`You leave the house... zero times per week? Are you being held hostage somewhere? Quick, blink twice and buy 14 shoe horns if you need help.`)
+        weirdnessMessages.value.push(`You leave the house... zero times per week? Are you being held hostage somewhere? Quick, blink twice and buy 14 shoehorns if you need help.`)
       } else if (weeklyOutings.value < 0) {
         weirdnessMessages.value.push(`You leave the house ${weeklyOutings.value} times? That must mean that you're only going INTO houses... within other houses. Houseception.`)
       } else if (weeklyOutings.value >= 35) {
@@ -323,7 +323,7 @@ export const useCalculatorStore = defineStore('calculator', () => {
   function setShoeMessage() {
     switch(shoeType.value) {
       case 'Big Rubber Clown Shoes':
-        shoeMessage.value = "Big Rubber Clown Shoes™ are great for balancing on balls, impressing dates, and defending your feet from electrical attacks, but this comes at the cost of them being quite difficult to put on without a shoe horn."
+        shoeMessage.value = "Big Rubber Clown Shoes™ are great for balancing on balls, impressing dates, and defending your feet from electrical attacks, but this comes at the cost of them being quite difficult to put on without a shoehorn."
         break
       case 'Boots':
         shoeMessage.value = "Since you wear boots, you are likely a very practical person. Whether they're cowboy boots, hiking boots, or super tall combat boots, we're sure you'll make the most out of the time you save."
@@ -335,25 +335,25 @@ export const useCalculatorStore = defineStore('calculator', () => {
         shoeMessage.value = "Dress shoes, eh? Are you, perhaps, a very important person with places to be and meetings to attend? Then you should waste no time lacing up your shoes!"
         break
       case 'Sneakers':
-        shoeMessage.value = "Old reliable sneakers. Good choice. Did you know that using a shoe horn will actually help preserve your shoe's sole, allowing them to be even more old and reliable?"
+        shoeMessage.value = "Old reliable sneakers. Good choice. Did you know that using a shoehorn will actually help preserve your shoe's sole, allowing them to be even more old and reliable?"
         break
       case 'Low Top Sneakers':
-        shoeMessage.value = "As someone with Lo Top sneakers, you must at least somewhat value the convenience of an easy to cram on shoe. Why not go all the way with a shoe horn?"
+        shoeMessage.value = "As someone with Lo Top sneakers, you must at least somewhat value the convenience of an easy to cram on shoe. Why not go all the way with a shoehorn?"
         break
       case 'High Heels':
-        shoeMessage.value = "High heels! Very sophisticated. While it's true shoe horns don't help much with these, high quality ones could make excellent gifts for all of the fancy galas and balls you probably attend."
+        shoeMessage.value = "High heels! Very sophisticated. While it's true shoehorns don't help much with these, high quality ones could make excellent gifts for all of the fancy galas and balls you probably attend."
         break
       case 'Velcro Shoes':
         shoeMessage.value = "Velcro shoes make a powerful statement about prioritizing convenience and function over normalcy. We salute you. The velcro will eventually wear out though, and when that day comes, a shoehorn could do you well."
         break
       case 'Slip ons/Flats':
-        shoeMessage.value = "It's as we say, flats are the future! But until everyone else converts to your extremely convenient shoe, we'll continue to tide the population over with our shoe horns."
+        shoeMessage.value = "It's as we say, flats are the future! But until everyone else converts to your extremely convenient shoe, we'll continue to tide the population over with our shoehorns."
         break
       case 'Flip flops/Sandals':
-        shoeMessage.value = "Flip flops and sandals are an excellent choice. That is, until winter comes and you get toe frostbite. During these unfortunate times, it's best to preserve that feeling of freedom with a warmer shoe and a shoe horn."
+        shoeMessage.value = "Flip flops and sandals are an excellent choice. That is, until winter comes and you get toe frostbite. During these unfortunate times, it's best to preserve that feeling of freedom with a warmer shoe and a shoehorn."
         break
       case 'No Shoes':
-        shoeMessage.value = "You... don't... wear shoes? Is it because you're scared that you won't be able to get them on and look like a buffoon in front of all your cool friends? Yet another reason for you to buy a shoe horn."
+        shoeMessage.value = "You... don't... wear shoes? Is it because you're scared that you won't be able to get them on and look like a buffoon in front of all your cool friends? Yet another reason for you to buy a shoehorn."
         break
     }
   }
