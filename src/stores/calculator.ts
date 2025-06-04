@@ -360,6 +360,12 @@ export const useCalculatorStore = defineStore('calculator', () => {
 
   // Set recommendation message based on time saved
   function setRecommendation() {
+    // Check for NaN results first
+    if (isNaN(timeSaved.value) || isNaN(timeSpent.value)) {
+      recommendation.value = "With a shoehorn you would have saved… well… this is embarrassing but we're having trouble calculating the specific time. You didn't do anything funny with the numbers, did you?"
+      return
+    }
+    
     if (timeSaved.value <= 0) {
       recommendation.value = "Seems like this part of your life is already optimized. Go you! You may not need it, but as a reward for someone who values shoe efficiency as much as we do, take this 20% off coupon!"
     } else {
@@ -519,6 +525,7 @@ export const useCalculatorStore = defineStore('calculator', () => {
     getShoeTime,
     
     // Helpers
-    formatTime
+    formatTime,
+    generateRandomActivity
   }
 })

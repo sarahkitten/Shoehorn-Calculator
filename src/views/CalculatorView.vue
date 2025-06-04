@@ -192,7 +192,10 @@ const handleAdvancedMode = () => {
           </div>
           
           <div class="form-group">
-            <label for="putOnTime">How long does it take you to put your shoes on? ({{ calculatorStore.putOnTime }} seconds)</label>
+            <div class="slider-label-container">
+              <label for="putOnTime">How long does it take you to put your shoes on?</label>
+              <span class="time-display">({{ calculatorStore.putOnTime }} seconds)</span>
+            </div>
             <input 
               type="range" 
               id="putOnTime" 
@@ -346,6 +349,22 @@ h2 {
 
 label {
   font-weight: bold;
+}
+
+.slider-label-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.time-display {
+  font-weight: normal;
+  min-width: 90px;
+  text-align: right;
+  font-style: italic;
+  color: #666;
 }
 
 input, select {

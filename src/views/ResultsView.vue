@@ -70,14 +70,15 @@ const generateShareText = () => {
   const timeSpent = calculatorStore.formatTime(calculatorStore.timeSpent);
   const timeSaved = calculatorStore.formatTime(calculatorStore.timeSaved);
   
-  let shareText = `🦶 I just calculated my lifetime shoe-putting-on time!\n\n`;
-  shareText += `I've spent ${timeSpent} of my life putting on shoes! `;
+  let shareText = `👞 Turns out I've spent ${timeSpent} of my life just putting on shoes. `;
   
   if (calculatorStore.timeSaved > 0) {
-    shareText += `With a shoehorn, I could have saved ${timeSaved}! `;
+    shareText += `With a shoehorn I would have saved ${timeSaved}. That's enough time to ${calculatorStore.generateRandomActivity(calculatorStore.timeSaved)}!\n\n`;
+  } else {
+    shareText += `\n\n`;
   }
   
-  shareText += `\n\nCalculate yours: https://sarahkitten.github.io/Shoehorn-Calculator\n#ShoeHornCalculator #TimeOptimization`;
+  shareText += `Calculate yours: https://sarahkitten.github.io/Shoehorn-Calculator\n#ShoehornCalculator`;
   
   return shareText;
 };
