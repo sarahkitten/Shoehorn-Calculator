@@ -261,5 +261,19 @@ footer {
     flex-direction: column;
     gap: 0.5rem;
   }
+  
+  /* Use custom viewport height for mobile */
+  body {
+    height: calc(var(--vh, 1vh) * 100);
+  }
+  
+  #app {
+    height: calc(var(--vh, 1vh) * 100);
+  }
+  
+  /* Add padding to account for mobile browser UI */
+  footer {
+    padding-bottom: env(safe-area-inset-bottom, 1rem);
+  }
 }
 </style>
