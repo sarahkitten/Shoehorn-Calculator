@@ -3,6 +3,19 @@ import { useRouter } from 'vue-router';
 import { useCalculatorStore } from '../stores/calculator';
 import { ref, computed, watch } from 'vue';
 
+// Import shoe images
+import bootImg from '../assets/shoe-images/boot.png';
+import clownImg from '../assets/shoe-images/clown.png';
+import dressImg from '../assets/shoe-images/dress.png';
+import flipflopImg from '../assets/shoe-images/flipflop.png';
+import hitopImg from '../assets/shoe-images/hitop.png';
+import lowtopImg from '../assets/shoe-images/lowtop.png';
+import highheelImg from '../assets/shoe-images/highheel.png'; 
+import noshoeImg from '../assets/shoe-images/noshoe.png';
+import sliponImg from '../assets/shoe-images/slipon.png';
+import sneakerImg from '../assets/shoe-images/sneaker.png';
+import velcroImg from '../assets/shoe-images/velcro.png';
+
 const router = useRouter();
 const calculatorStore = useCalculatorStore();
 
@@ -44,6 +57,25 @@ const handleSliderChange = (shoeType: string, newValue: number) => {
       slider.value = constrainedValue.toString();
     }
   }
+};
+
+// Map shoe types to their corresponding imported images
+const getShoeImagePath = (shoeType: string): string => {
+  const imageMap: Record<string, string> = {
+    'Big Rubber Clown Shoes': clownImg,
+    'Boots': bootImg,
+    'Hi Top Sneakers': hitopImg,
+    'Dress shoes': dressImg,
+    'Sneakers': sneakerImg,
+    'Low Top Sneakers': lowtopImg,
+    'High Heels': highheelImg,
+    'Velcro Shoes': velcroImg,
+    'Slip ons/Flats': sliponImg,
+    'Flip flops/Sandals': flipflopImg,
+    'No Shoes': noshoeImg
+  };
+  
+  return imageMap[shoeType] || sneakerImg;
 };
 
 // Watch for changes in shoe type to update the default put on time
@@ -215,9 +247,12 @@ const handleAdvancedMode = () => {
             <p v-if="shoeDistributionError" class="error">{{ shoeDistributionError }}</p>
             
             <div v-for="type in calculatorStore.shoeTypes" :key="type" class="shoe-distribution-item">
-              <div class="shoe-distribution-label">
-                <label :for="`distribution-${type}`">{{ type }}</label>
-                <span>{{ calculatorStore.shoeDistribution[type] || 0 }}%</span>
+              <div class="shoe-distribution-header">
+                <img :src="getShoeImagePath(type)" :alt="type" class="shoe-image" />
+                <div class="shoe-distribution-label">
+                  <label :for="`distribution-${type}`">{{ type }}</label>
+                  <span>{{ calculatorStore.shoeDistribution[type] || 0 }}%</span>
+                </div>
               </div>
               <div class="constrained-slider-container">
                 <input 
@@ -411,13 +446,28 @@ input, select {
 }
 
 .shoe-distribution-item {
+  margin-bottom: 1rem;
+}
+
+.shoe-distribution-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   margin-bottom: 0.5rem;
+}
+
+.shoe-image {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .shoe-distribution-label {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex: 1;
 }
 
 .error {
