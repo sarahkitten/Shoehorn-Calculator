@@ -177,7 +177,8 @@ const handleAdvancedMode = () => {
   <main>
     <div class="calculator-container">
       <h1>
-        Shoehorn Time Ca<span class="shoehorn-l"></span>culator
+        <span class="title-part">Shoehorn Time</span>
+        <span class="calculator-word">Ca<span class="shoehorn-l"></span>culator</span>
       </h1>
       <p class="intro">
         How much time have you spent putting on shoes throughout your life? 
@@ -328,6 +329,27 @@ const handleAdvancedMode = () => {
 h1 {
   font-size: 2.5rem;
   margin-bottom: 1rem;
+}
+
+.title-part {
+  margin-right: 0.3em;
+}
+
+.calculator-word {
+  white-space: nowrap;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 2rem;
+  }
+  
+  .title-part {
+    display: block;
+    margin-bottom: 0.2rem;
+    margin-right: 0;
+  }
 }
 
 .shoehorn-l {

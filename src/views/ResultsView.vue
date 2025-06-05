@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { useCalculatorStore, SHOE_TIMES } from '../stores/calculator';
-import { onMounted, onUnmounted, computed, ref, watch } from 'vue';
+import { onMounted, onUnmounted, computed, ref, watch, nextTick } from 'vue';
 
 const router = useRouter();
 const calculatorStore = useCalculatorStore();
@@ -41,6 +41,15 @@ onMounted(() => {
     timeSpent: calculatorStore.timeSpent, 
     timeSaved: calculatorStore.timeSaved,
     weirdnessMessages: calculatorStore.weirdnessMessages
+  });
+  
+  // Scroll to top of page when component mounts
+  nextTick(() => {
+    // Scroll the main content container to top (body has overflow: hidden)
+    const mainElement = document.querySelector('main') as HTMLElement;
+    if (mainElement) {
+      mainElement.scrollTop = 0;
+    }
   });
   
   // If there are no results AND no weirdness messages, redirect back to the calculator
@@ -185,7 +194,10 @@ onUnmounted(() => {
 <template>
   <main>
     <div class="results-container">
-      <h1>Your Shoe Time Resu<span class="shoehorn-l"></span>ts</h1>
+      <h1>
+        <span class="title-part">Your Shoe Time</span>
+        <span class="results-word">Resu<span class="shoehorn-l"></span>ts</span>
+      </h1>
       
       <!-- Display any weirdness messages -->
       <div v-if="calculatorStore.weirdnessMessages.length > 0" class="weirdness-messages">
@@ -287,6 +299,27 @@ onUnmounted(() => {
 h1 {
   font-size: 2.5rem;
   margin-bottom: 2rem;
+}
+
+.title-part {
+  margin-right: 0.3em;
+}
+
+.results-word {
+  white-space: nowrap;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 2rem;
+  }
+  
+  .title-part {
+    display: block;
+    margin-bottom: 0.2rem;
+    margin-right: 0;
+  }
 }
 
 .shoehorn-l {
