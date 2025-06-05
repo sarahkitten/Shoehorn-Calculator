@@ -109,7 +109,13 @@ const handleShare = async () => {
     try {
       await navigator.share(shareData);
       return;
-    } catch (err) {
+    } catch (err: any) {
+      // If user cancelled/dismissed the share modal, don't show fallback
+      if (err.name === 'AbortError' || err.name === 'NotAllowedError') {
+        console.log('User cancelled native share');
+        return;
+      }
+      // Only show custom modal for actual failures
       console.log('Web Share API failed, falling back to modal:', err);
     }
   }
