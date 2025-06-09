@@ -30,6 +30,7 @@ import { RouterView } from 'vue-router'
   
   <footer>
     <div class="footer-content">
+      <p class="tagline">One Step Ahead</p>
       <p>© {{ new Date().getFullYear() }} Abbeyhorn. This is a conceptual project.</p>
       <p class="small">All time calculations are for entertainment purposes only and are not scientifically validated.</p>
     </div>
@@ -247,6 +248,14 @@ footer {
   margin: 0 auto;
   padding: 0 2rem;
   text-align: center;
+}
+
+.tagline {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #4CAF50;
+  margin-bottom: 0.5rem;
+  font-style: italic;
 }
 
 .small {

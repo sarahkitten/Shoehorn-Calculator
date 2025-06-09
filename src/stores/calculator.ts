@@ -102,6 +102,11 @@ export const useCalculatorStore = defineStore('calculator', () => {
     
     // Advanced specific weirdness
     
+    // Check for No Shoes contradiction (reporting time > 0 but No Shoes is 100%)
+    if (putOnTime.value > 0 && shoeDistribution.value['No Shoes'] === 100) {
+      weirdnessMessages.value.push(`Your Honor, the defendant reported taking ${putOnTime.value} seconds to put on their shoes but also reported that they wear no shoes 100% of the time. A clear contradiction. They deserve nothing less than 1000 years in galactic shoe prison for making a mockery of this distinguished website.`);
+    }
+    
     // Put on time checks
     if (putOnTime.value >= 1 && putOnTime.value <= 3 && shoeType.value !== 'No Shoes') {
       weirdnessMessages.value.push(`Holy moly, you are fast at putting your shoes on! You ARE telling the truth, right? We don't want anyone besmirching the integrity of our shoehorn time calculator.`);
@@ -226,7 +231,7 @@ export const useCalculatorStore = defineStore('calculator', () => {
       setShoeMessage();
     } else {
       // Generic message for mixed shoe usage
-      shoeMessage.value = "You seem to have quite a varied shoe collection! A shoehorn can be particularly useful for those days when you're wearing your harder-to-put-on footwear.";
+      shoeMessage.value = "Glad to see you're properly logging your different kinds of shoes. A lot of effort went into developing that slider system. Speaking of sliding, why not slide into your shoes with a shoe horn next time? What? That was super clever.";
     }
   }
 

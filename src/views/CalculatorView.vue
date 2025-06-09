@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { useCalculatorStore } from '../stores/calculator';
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, nextTick } from 'vue';
 
 // Import shoe images
 import bootImg from '../assets/shoe-images/boot.png';
@@ -157,7 +157,25 @@ const handleSubmit = () => {
     console.log('Calculation completed, redirecting to results');
     router.push('/results');
   } else {
-    console.log('Validation failed');
+    console.log('Validation failed, scrolling to first error');
+    // Scroll to first error when validation fails
+    nextTick(() => {
+      const firstError = document.querySelector('.error');
+      if (firstError) {
+        const mainElement = document.querySelector('main') as HTMLElement;
+        if (mainElement) {
+          // Calculate the position of the error relative to the main container
+          const errorRect = firstError.getBoundingClientRect();
+          const mainRect = mainElement.getBoundingClientRect();
+          const scrollTop = errorRect.top - mainRect.top + mainElement.scrollTop - 100; // 100px offset for better visibility
+          
+          mainElement.scrollTo({
+            top: scrollTop,
+            behavior: 'smooth'
+          });
+        }
+      }
+    });
   }
 };
 

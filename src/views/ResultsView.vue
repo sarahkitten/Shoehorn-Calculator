@@ -87,7 +87,7 @@ const generateShareText = () => {
     shareText += `\n\n`;
   }
   
-  shareText += `Calculate yours: https://sarahkitten.github.io/Shoehorn-Calculator\n#ShoehornCalculator`;
+  shareText += `Calculate yours: https://sarahkitten.github.io/Shoehorn-Calculator\n#ShoehornCalculator #OneStepAhead`;
   
   return shareText;
 };
